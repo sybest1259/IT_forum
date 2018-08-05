@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>欢迎：{{ username }}</h2>
+<h4>请点击右侧链接地址确认修改邮箱 <a href="{{ url_for('user.new_email',token=token,_external=True) }}">修改邮箱</a></h4>
+</body>
+</html>

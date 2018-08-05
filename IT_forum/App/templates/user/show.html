@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table{
+            margin: auto;
+            border-collapse: collapse;
+        }
+        td{
+            border:1px solid orange;
+            width:200px;
+            height: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>username</th>
+            <th>sex</th>
+            <th>age</th>
+            <th>icon</th>
+        </tr>
+        {% for row in data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.username }}</td>
+                <td>
+                    {% if row.sex %}
+                        男
+                    {% else %}
+                        女
+                    {% endif %}
+                </td>
+                <td>{{ row.age }}</td>
+                <td>{{ row.icon }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

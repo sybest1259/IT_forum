@@ -1,0 +1,18 @@
+{% extends 'common/base.html' %}
+{% block title %}
+注册
+{% endblock %}
+
+{% block pagecontent %}
+    {{ super() }}
+    {% from 'bootstrap/wtf.html' import quick_form %}
+    <div class="page-header"><h3>账户注册</h3></div>
+
+    {{ quick_form(form) }}
+        <span style="margin:auto"><a href="{{ url_for('user.again_activate') }}">已有账户未激活？</a></span>
+
+{#    <img src="{{ img_url }}">#}
+
+
+
+{% endblock %}

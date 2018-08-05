@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>欢迎：{{ username }}</h2>
+<h4>请点击右侧链接地址将新的邮箱激活 <a href="{{ url_for('user.activate',token=token,_external=True) }}">激活</a></h4>
+</body>
+</html>

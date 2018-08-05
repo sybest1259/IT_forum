@@ -1,0 +1,101 @@
+{% extends 'common/base.html' %}
+{% block title %}
+    个人主页
+{% endblock %}
+{% from 'bootstrap/wtf.html' import quick_form %}
+{% block pagecontent %}
+    {{ super() }}
+{#    <div class="page-header">#}
+    <div style="background-color: #222222;width: 100%;height: 60px;border-radius: 0px;text-align: center;padding: 1px;position: absolute;top:-1px"> <h3 style="color: white;">个人主页</h3></div>
+
+{#    <span style="position: absolute;left:18px;top:0px"><h2>个人主页</h2></span><br><br>#}
+        <hr>
+    <br>
+
+        <div class="container">
+
+    <div class="row">
+
+        <div class="col-md-3">
+          {#         <form action="{{ url_for('center.upload') }}" method="post">#}
+            <a href="{{ url_for('center.upload_icon') }}"><img src="{{ img_url }}" alt="点击修改头像" width="200" style="border: solid 0px"></a><br>
+            <h5>
+{#                {% if 0<{{ moment(date).fromNow()<=30 }}#}
+                {% if date<=2 %}
+                普通会员：{{ current_user.username }}<br><br>
+                    您还有{{ 3-date }}天升级到铜牌会员
+                {% elif 2<date<=5 %}
+                铜牌会员：{{ current_user.username }}<br><br>
+                    您还有{{ 5-date }}天升级到银牌会员
+                {% elif 5<date<=10 %}
+                银牌会员：{{ current_user.username }}<br><br>
+                    您还有{{ 10-date }}天升级到金牌会员
+                {% elif 10<date<=20 %}
+                金牌会员：{{ current_user.username }}<br><br>
+                    您还有{{ 20-date }}天升级到钻石会员
+                {% elif 20<date<=30 %}
+                钻石会员：{{ current_user.username }}<br><br>
+                    您还有{{ 30-date }}天升级到超级会员
+                {% elif 30<date %}
+                超级会员：{{ current_user.username }}<br><br>
+                {% endif %}
+            </h5>
+{#                您已注册{{ date }}天<br><br>#}
+                最近一次登录时间：<br>{{ lastlogin_date }}
+        </div>
+        <div class="col-md-4" style="">
+
+            <h4> <span style="font-weight: bold;">个人信息</span></h4><br>
+
+            <span style="font-weight: bold;">邮箱</span> {{ current_user.email }}<br><br>
+            <span style="font-weight: bold;">性别<br></span>{{ quick_form(form) }}
+
+
+
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+{#    </div>#}
+        </div>
+    <hr>
+{#    <div ><h3>个人收藏</h3></div>#}
+     {% for posts in favorite %}
+            <div class="page-header">
+            <div class="container">
+                <div class="media" style="">
+                    <div class="media-left">
+                        <a href="#"><img class="media-object" src="{{ url_for('static',filename='upload/'+posts.user.icon) }}" width="150" alt="..." style="border: solid 1px"></a>
+                        {% if (((now-posts.user.register_date)|string).split(' ')|length) == 1 %}
+                        {% set d=1 %}
+                        {% else %}
+                        {% set d=((now-posts.user.register_date)|string).split(' ')[0]|int %}
+                        {% endif %}
+                        {% if  d<=2  %}普通
+                        {% elif  2<d<=5  %}铜牌
+                        {% elif  5<d<=10  %}银牌
+                        {% elif  10<d<=20  %}金牌
+                        {% elif  20<d<=30  %}钻石
+                        {% elif  30<d  %}超级
+                        {% endif %}
+                        用户：<a style="cursor: pointer">{{ posts.user.username }}</a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading">{{ posts.title }}<span style="float: right;font-size: 13px"> 发表时间：{{ posts.timestamp }}</span></h3>
+{#                        {{ moment(posts.timestamp).format('LLL') }}#}
+                        <a href="{{ url_for('details.index',posts=posts) }}">{{ posts.article|striptags }}</a>
+                    </div>
+                <br>
+                </div>
+            </div>
+            </div>
+        {% endfor %}
+
+
+
+
+{% from 'common/pagination.html' import page_show %}
+<div class="container">
+{{ page_show(pagination,'center.self_center') }}
+</div>
+{% endblock %}

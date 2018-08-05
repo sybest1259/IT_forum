@@ -1,0 +1,9 @@
+{% extends 'common/base.html' %}
+{% block title %}
+激活
+{% endblock %}
+{% block pagecontent %}
+    {{ super() }}
+    {% from 'bootstrap/wtf.html' import quick_form %}
+{{ quick_form(form) }}
+{% endblock %}

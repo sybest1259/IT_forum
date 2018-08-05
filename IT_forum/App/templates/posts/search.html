@@ -1,0 +1,27 @@
+{% extends 'common/base.html' %}
+
+{% block title %}
+搜索结果
+{% endblock %}
+{% from 'bootstrap/wtf.html' import quickform %}
+{% block pagecontent %}
+ {% for posts in data %}
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="{{ url_for('static',filename='upload/'+posts.user.icon) }}"
+                                 width="150" alt="..." style="border: solid 1px">
+                        </a>
+                        用户：<a>{{ posts.user.username }}</a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading">{{ posts.title }}<span style="float: right;font-size: 13px"> 发表时间：{{ posts.timestamp }}</span></h3>
+{#                        {{ moment(posts.timestamp).format('LLL') }}#}
+                        <a href="{{ url_for('details.index',posts=posts) }}">{{ posts.article|striptags }}</a>
+                    </div>
+                </div>
+            {% endfor %}
+            {# ----------------------组件媒体--------------------------------#}
+{% from 'common/pagination_args.html' import page_show %}
+{{ page_show(pagination,'posts.search',keyword) }}
+{% endblock %}

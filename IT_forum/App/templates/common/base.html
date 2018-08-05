@@ -1,0 +1,152 @@
+{% extends 'bootstrap/base.html' %}
+{% block navbar %}
+    <nav class="navbar navbar-inverse" style="border-radius: 0px">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="{{ url_for('main.index') }}">首页 <span
+                            class="sr-only">(current)</span></a>
+                    </li>
+                    {% for c in course %}
+                    <<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" data-hover="dropdown">{{ c.title }} </a>
+                        <ul class="dropdown-menu">
+                            {% for c1 in course1 %}
+                            {% if c1.pid==c.id %}
+                                <li class="dropdown-submenu"><a  href="#">{{ c1.title }}</a>
+                                    <ul class="dropdown-menu">
+                                        {% for c2 in course2 %}
+                                        {% if c2.pid==c1.id %}
+                                            <li><a href="{{ url_for('course.show_course',title=c2.title) }}">{{ c2.title }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+
+                </ul>
+
+
+                <ul class="nav navbar-nav navbar-right">
+                <<li class="dropdown" {% if current_user.username!='admin' %}style="display: none"{% endif %}>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" data-hover="dropdown">课程管理</a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu"><a  href="#"> 课程新增</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ url_for('course.add_course_main') }}">新增课程分类</a></li>
+                                    <li class="dropdown-submenu"><a href="#">新增课程章节</a>
+                                        <ul class="dropdown-menu">
+                                            {% for c in course %}
+                                            <li><a href="{{ url_for('course.add_course_secondary',course=c) }}">{{ c.title }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown-submenu"><a href="#">新增课程</a>
+                                        <ul class="dropdown-menu">
+                                            {% for c in course %}
+                                            <li class="dropdown-submenu"><a href="#">{{ c.title }}</a>
+                                                <ul class="dropdown-menu">
+                                                    {% for c1 in course1 %}
+                                                        {% if c1.pid==c.id %}
+                                                            <li><a href="{{ url_for('course.add_course_third',course=c1) }}">{{ c1.title }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#">修改课程</a></li>
+                            <li><a href="#">删除课程</a></li>
+                        </ul>
+                    </li>
+                <li><a href="{{ url_for('posts.send_posts') }}">发表内容</a></li>
+                <form class="navbar-form navbar-left" action="{{ url_for('posts.index') }}" method="post" >
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Python" maxlength="10" name="search">
+                    </div>
+                    <button type="submit" class="btn btn-default">站内搜索</button>
+                </form>
+                    {#      判断用户是否登录#}
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('center.index') }}">欢迎：{{ current_user.username }}</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" data-hover="dropdown">个人中心 <span class="caret"></span></a>
+
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('center.index') }}"> 个人主页</a></li>
+                                <li><a href="{{ url_for('center.upload_icon') }}"> 修改头像</a></li>
+                                <li><a href="{{ url_for('user.modify_code') }}">修改密码</a></li>
+                                <li><a href="{{ url_for('user.confirm_modify') }}">修改邮箱</a></li>
+{#                                {{ url_for('static',filename='email/confirm_modify.html') }}#}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ url_for('user.logout') }}">退出登录</a></li>
+                            </ul>
+
+                        </li>
+                    {% else %}
+                        <li><a href="{{ url_for('user.login') }}">登录</a></li>
+                        <li><a href="{{ url_for('user.register') }}">注册</a></li>
+                    {% endif %}
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+{% block body %}
+    {{ super() }}
+    <body style="background-color:#e4e4e4 "></body>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="background:white;border: solid 1px;border-color:#bcbcbc;position: absolute;top:52px;left:270px;padding: 0px">
+    <br>
+        {% block pagecontent %}
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> {{ message }}
+                </div>
+            {% endfor %}
+
+        {% endblock %}
+        <br>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.locale('zh-CN')}}
+    <script src="{{url_for('static', filename='Jquery/jquery.js')}}"></script>
+    <script src="{{url_for('static', filename='Jquery/bootstrap_dropdown_hover.js')}}"></script>
+    <script src="https://gitee.com/niandeng/ckplayerX.git"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='Jquery/submenu.css')}}">
+
+{% endblock %}
+
+

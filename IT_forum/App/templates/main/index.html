@@ -1,0 +1,129 @@
+{% extends 'common/base.html' %}
+
+{% block title %}
+    首页
+{% endblock %}
+
+{#{% block body %}#}
+{#    {{ super() }}#}
+{#    <body onload="{{ url_for('course.index') }}"></body>#}
+{#{% endblock %}#}
+
+{% block pagecontent %}
+    {{ super() }}
+    <h2 class="media-heading">
+{#        {% if title != '请登录后访问' %}#}
+{#            {{ title }}&nbsp;&nbsp;欢迎访问#}
+{#        {% else %}#}
+{#            {{ title }}#}
+{#        {% endif %}#}
+        <span style="float: right;font-size: 15px;"></span></h2>
+{#    <div class="container" style="height: 400px">#}
+        {#        <div class="col-md-3"></div>#}
+        {#        <div class="" style="height: 400px;width: 1200px;">#}
+        {# ----------------------轮播图--------------------------------#}
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="top:-25px">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                {% for i in range(0,5) %}
+                    <li data-target="#carousel-example-generic"
+                        data-slide-to={{ i|string }} {% if i==0 %}class="active"{% endif %}></li>
+                {% endfor %}
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                {% for i in range(1,6) %}
+                    <div class="item {% if i==1 %}active{% endif %}">
+                        <img src="{{ url_for('static',filename='picture/'+i|string+'.jpg') }}" alt="...">
+                        <div class="carousel-caption">
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+{#    </div>#}
+    {# ----------------------轮播图--------------------------------#}
+    {#        <div class="col-md-5"></div>#}
+    {#    </div>#}
+
+    {# ----------------------组件媒体--------------------------------#}
+    {% for posts in data %}
+        <div class="page-header">
+        <div class="container">
+        <div class="media">
+            <div class="media-left" >
+                <a href="#">
+                    <img class="media-object" src="{{ url_for('static',filename='upload/'+posts.user.icon) }}"
+                         width="150" alt="..." style="border: solid 1px">
+                </a>
+                {% if (((now-posts.user.register_date)|string).split(' ')|length) == 1 %}
+                    {% set d=1 %}
+                {% else %}
+                    {% set d=((now-posts.user.register_date)|string).split(' ')[0]|int %}
+                {% endif %}
+
+                {% if  d<=2 %}普通
+                {% elif 2<d<=5 %}铜牌
+                {% elif 5<d<=10 %}银牌
+                {% elif 10<d<=20 %}金牌
+                {% elif 20<d<=30 %}钻石
+                {% elif 30<d %}超级
+                {% endif %}
+                会员：<a>{{ posts.user.username }}</a>
+            </div>
+
+            <div class="media-body" >
+
+                <h3 class="media-heading">{{ posts.title }}<span
+                        style="float: right;font-size: 13px"> 发表时间：{{ posts.timestamp }}</span></h3>
+                {#                        {{ moment(posts.timestamp).format('LLL') }}#}
+                <a href="{{ url_for('details.index',posts=posts) }}">{{ posts.article|striptags }}</a>
+            </div>
+            <p style="cursor: pointer;"><a id="{{ posts.id }}"
+                                           url="{{ url_for('posts.collections',pid=posts.id,_external=True) }}"
+                                           onclick="favorite({{ posts.id }})">
+                {% if current_user.is_authenticated %}{% if current_user.is_favorite(posts.id) %}已收藏{% else %}
+                    收藏{% endif %}{% else %}收藏{% endif %}</a></p>
+        </div>
+        </div>
+        </div>
+    {% endfor %}
+    {# ----------------------组件媒体--------------------------------#}
+    {% from 'common/pagination.html' import page_show %}
+    <div class="container">
+    {{ page_show(pagination,'main.show') }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function favorite(pid) {
+            var pnode = $('#' + pid);
+            $.get(pnode.attr('url'), function (data, status) {
+                if (data.res == 200) {
+                    if (pnode.text() == '收藏') {
+                        pnode.text('已收藏');
+                    } else {
+                        pnode.text('收藏');
+                    }
+                } else {
+                    if (confirm("您还没有登录\n是否前去登录？")) {
+                        window.location.href ={{ url_for('user.login') }};
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

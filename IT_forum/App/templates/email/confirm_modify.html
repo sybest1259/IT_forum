@@ -1,0 +1,21 @@
+{% extends 'common/base.html' %}
+{% block title %}
+    确认修改邮箱
+{% endblock %}
+{% block pagecontent %}
+{{ super() }}
+    <script src="{{url_for('static', filename='Jquery/jquery.js')}}"></script>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+     $(document).ready(function (){
+    var c = confirm('修改邮箱操作会向您当前邮箱发送一封确认邮件')
+    if (c){
+    window.location="{{ url_for('user.modify_email') }}"
+    }
+    else{window.location="{{ url_for('main.index') }}"}
+    })
+</script>
+{% endblock %}
+

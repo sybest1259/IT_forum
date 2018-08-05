@@ -1,0 +1,216 @@
+{% extends 'common/base.html' %}
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+    function ol(){
+         {# var s = $(".slide_a").length#}
+         {#for(i=0;i<=s;i++)#}
+             $(".slide").click(function ()
+             {
+                 $(".slide_div").slideToggle()
+                 $('#txt').val($(this).siblings(".slide_div"))
+             })
+     }
+
+
+
+
+     {#$(document).ready(function (){#}
+     {##}
+     {#     var s = $(".slide_a").length#}
+     {#    for(var i=0;i<s;i++)#}
+     {#    {#}
+     {#        $(".slide_a").eq(i).click(function ()#}
+     {#        {$("#txt").val(i)#}
+     {#            $(".slide_div").eq(i).slideToggle()#}
+     {##}
+     {##}
+     {#        })#}
+     {#    }#}
+     {##}
+
+
+</script>
+{% endblock %}
+
+{% block style %}
+{#<style type="text/css">#}
+{#.slide{cursor: pointer}#}
+{#</style>#}
+{% endblock %}
+
+{% block title %}
+    {% for posts in data %}
+        {{ posts.user.username }}的帖子
+    {% endfor %}
+{% endblock %}
+{% from 'bootstrap/wtf.html' import quickform %}
+{% block pagecontent %}
+    <body onload="ol()">
+    {% set x=0 %}
+{#    <input type="text" id="txt" value="">#}
+
+    {{ super() }}
+    {% for posts in data %}
+        <div style="background-color: #222222;width: 100%;height: 60px;border-radius: 0px;text-align: center;padding: 1px;position: absolute;top:-1px"> <h3 style="color: white;">{{ posts.title }}</h3><span style="font-size: 15px;position: absolute;top: 70px;right:13px;color: #2e383c">浏览次数： {{posts.scan}}</span></div>
+        <div class="page-header">
+        <div class="container" style="padding-top: 40px">
+                <div class="media" style="">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="{{ url_for('static',filename='upload/'+posts.user.icon) }}"
+                                 width="150" alt="..." style="border: solid 1px">
+                        </a>
+                        {% if (((now-posts.user.register_date)|string).split(' ')|length) == 1 %}
+                        {% set d=1 %}
+                        {% else %}
+                        {% set d=((now-posts.user.register_date)|string).split(' ')[0]|int %}
+                        {% endif %}
+                        {% if  d<=2  %}普通
+                        {% elif  2<d<=5  %}铜牌
+                        {% elif  5<d<=10  %}银牌
+                        {% elif  10<d<=20  %}金牌
+                        {% elif  20<d<=30  %}钻石
+                        {% elif  30<d  %}超级
+                        {% endif %}
+                        用户：<a>{{ posts.user.username }}</a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading"><span style="float: right;font-size: 13px"> 发表时间：{{ posts.timestamp }}</span></h3>
+{#                        {{ moment(posts.timestamp).format('LLL') }}#}
+                        {{ posts.article|safe}}
+
+                    </div>
+                <span style="float: right"><h5>楼主&nbsp;&nbsp;&nbsp;<a href="{{ url_for('details.discuss',posts=posts) }}">评论</a></h5></span>
+                </div>
+        </div>
+        </div>
+    {% endfor %}
+
+{##找到当前帖子的id#}
+{##遍历所有帖子，取出path.split(',')[1]#}
+{##如果该值等于id，则显示该帖子#}
+{#    {{ data1[6].path.split(',')[1] }}#}
+{#    {{ data1|length }}#}
+    {% for posts1 in data1 %}
+
+{#        {% for posts in data %}#}
+{#        {% if  posts.id == posts1.path.split(',')[1]|int %}#}
+        <div class="page-header">
+        <div class="container">
+                <div class="media" style="">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="{{ url_for('static',filename='upload/'+posts1.user.icon) }}"
+                                 width="150" alt="..." style="border: solid 1px">
+                        </a>
+                        {% if (((now-posts1.user.register_date)|string).split(' ')|length) == 1 %}
+                        {% set d=1 %}
+                        {% else %}
+                        {% set d=((now-posts1.user.register_date)|string).split(' ')[0]|int %}
+                        {% endif %}
+                        {% if  d<=2  %}普通
+                        {% elif  2<d<=5  %}铜牌
+                        {% elif  5<d<=10  %}银牌
+                        {% elif  10<d<=20  %}金牌
+                        {% elif  20<d<=30  %}钻石
+                        {% elif  30<d  %}超级
+                        {% endif %}
+                        用户：<a style="cursor: pointer">{{ posts1.user.username }}</a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading">{{ posts1.title }}<span style="float: right;font-size: 13px"> 发表时间：{{ posts1.timestamp }}</span></h3>
+{#                        {{ moment(posts.timestamp).format('LLL') }}#}
+                        {{ posts1.article|safe }}
+
+                    </div>
+
+                </div>
+            <div class="media-body" style="">
+                <div style="float: right"><h5>{{ loop.index+(pagination.page-1)*5 }}楼&nbsp;&nbsp;&nbsp;<a {% if list_anwser_list[loop.index0]|length==0 %}class="disabled" style=" text-decoration: none;color: #2e383c " {% else %}class="slide" style="cursor: pointer"{% endif %} >
+{#                    {% for i in list_anwser %}#}
+{##}
+    {#                    i是每条父回复的子回复的集合#}
+{#                        {% if i %}#}
+    {#                    j是每个子回复#}
+{#                            {% for j in i %}#}
+{##}
+    {#                            如果父回复的id=子回复的pid#}
+{#                                {% if posts1.id==j.pid %}#}
+{#                                    {% x+=1 %}#}
+{#                                    {% x=x+1 %}#}
+{#                                    {% set x=x+1 %}#}
+{#                                    {% set y=1 %}#}
+{#                                    {{ x }}#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        {% endif %}#}
+{##}
+{#                    {% endfor %}#}
+{##}
+{#                    {% if y==1 %}#}
+{#                    {{ x }}#}
+{#                    {% endif %}#}
+
+
+    {#                    i是每条父回复的子回复的集合#}
+
+
+
+
+{% if list_anwser_list[loop.index0]|length==0 %}暂无评论{% else %}评论({{ list_anwser_list[loop.index0+(pagination.page-1)*5]|length }}){% endif %}</a>&nbsp;<a  href="{{ url_for('details.discuss',posts=posts1) }}">&lt;发表评论&gt;</a></h5></div>
+            </div>
+                <div class="slide_div" style="display: none ">
+                    {% for i in list_anwser %}
+    {#                    i是每条父回复的子回复的集合#}
+                        {% if i %}
+    {#                    j是每个子回复#}
+                            {% for j in i %}
+    {#                            如果父回复的id=子回复的pid#}
+                                {% if posts1.id==j.pid %}
+
+                                <hr>
+                                 <div class="media-body">
+                                    <h4><span style="font-weight: bold">{{ j.user.username }}</span>&nbsp;{{ j.title }}<span style="float: right;font-size: 13px"> 发表时间：{{ j.timestamp }}</span></h4>
+    {#                              {{ moment(posts.timestamp).format('LLL') }}#}
+                                    {{ j.article|striptags }}
+
+                                 </div><br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+        </div>
+        </div>
+{#            {% endif %}#}
+{#    {% endfor %}#}
+    {% endfor %}
+            {# ----------------------组件媒体--------------------------------#}
+{% for posts in data %}
+    <div class="container">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li {% if not pagination.has_prev %} class="disabled" {% endif %}>
+                <a {% if pagination.has_prev %} href="{{ url_for('details.get_details',posts=posts,page=pagination.prev_num) }}"{% endif %} aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% for num in pagination.iter_pages() %}
+            {% if num %}
+                <li {% if pagination.page==num %} class="active"{% endif %}><a href="{{ url_for('details.get_details',posts=posts,page=num) }}">{{ num }}</a></li>
+            {% else %}
+                <li><a>...</a></li>
+            {% endif %}
+        {% endfor %}
+            <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+                <a {% if pagination.has_next %} href="{{ url_for('details.get_details',posts=posts,page=pagination.next_num) }}"{% endif %} aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div>
+{% endfor %}
+    </body>
+{% endblock %}

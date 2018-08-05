@@ -1,0 +1,28 @@
+{% extends 'common/base.html' %}
+{% block title %}
+创建课程
+{% endblock %}
+{% from 'bootstrap/wtf.html' import quick_form %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{#    {{ moment.include_moment() }}#}
+{#    {{ moment.locale('zh-CN') }}#}
+{#    <script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>#}
+{% endblock %}
+{% block pagecontent %}
+    {{ super() }}
+    <div class="page-header"><h2>创建课程</h2></div>
+    <form action="" method="post">
+    {{ form.csrf_token }}
+        {{ form.title.label }}
+        {{ form.title(class="form-control",id="articletitle") }}
+        {% if form.title.errors %}
+            {% for errors in form.title.errors %}
+                <div class="alert alert-danger" role="alert">{{ errors }}</div>
+            {% endfor %}
+        {% endif %}
+        <br>
+        <button type="submit" class="btn btn-success" style="float: right;width: 100px">提交</button><br>
+    </form>
+{% endblock %}

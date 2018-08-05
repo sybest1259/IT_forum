@@ -1,0 +1,86 @@
+{% extends 'common/base.html' %}
+{% block scripts %}
+    {{ super() }}
+{#    <script src="{{ url_for('static', filename='ckplayer/ckplayer.js') }}"></script>#}
+{#	 <script>#}
+{#            var flashvars;#}
+{##}
+{#            flashvars={#}
+{#                f: '/lib/ckplayer/m3u8.swf',#}
+{#                a: 'http://hls.open.ys7.com/openlive/ed9131cc6d154c52a6240ba4ddb2671e.hd.m3u8',#}
+{#                c: 0,#}
+{#                p: 1,#}
+{#                s: 4,#}
+{#                lv: 1#}
+{#            };#}
+{##}
+{#            var params = {bgcolor: '#FFF', allowFullScreen: true, allowScriptAccess: 'always', wmode: 'transparent'};#}
+{##}
+{#            CKobject.embedSWF("/lib/ckplayer/ckplayer.swf", "video1", "video", "100%", "100%", flashvars, params);#}
+{#    </script>#}
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='ckplayer/ckplayer.js') }}"></script>
+
+<script type="text/javascript">
+{#$(document).ready(#}
+    function f(title) {
+        {#var t =title#}
+        var videoObject = {
+		container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
+		variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
+		flashplayer:false,//如果强制使用flashplayer则设置成true
+		video:'/static/video/'+title+'.mp4'//视频地址
+	};
+	    var player=new ckplayer(videoObject);
+
+    }
+
+</script>
+{% endblock %}
+{% block body %}
+    {{ super() }}
+    <body onload="f('{{ title|string }}')">
+
+    </body>
+{% endblock %}
+
+{% block content %}
+{#    <p style="font-weight: bold;font-size: 25px;text-align: center;">{{ title }}</p>#}
+{#    <div class="container" style="background:white;border: solid 1px;border-color:#bcbcbc">#}
+{#        {% for message in get_flashed_messages() %}#}
+{#            <div class="alert alert-success alert-dismissible" role="alert">#}
+{#                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span#}
+{#                        aria-hidden="true">&times;</span></button>#}
+{#                <strong>Warning!</strong> {{ message }}#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#        <video width="1140" height="768" controls="controls">#}
+{#            <source src="{{ url_for('static',filename='video/'+title+'.mp4') }}" type="video/mp4"/>#}
+{#        </video>#}
+{#    </div>#}
+
+
+
+
+{#   <object width="100%" height="100%" type="video/x-ms-asf" url="xxx.wmv" data="xxx.wmv"#}
+{#            classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">#}
+{#            <param name="url" value="xxx.wmv">#}
+{#            <param name="filename" value="xxx.wmv">#}
+{#            <param name="autostart" value="1">#}
+{#            <param name="uiMode" value="full" />#}
+{#            <param name="autosize" value="1">#}
+{#            <param name="playcount" value="1">#}
+{#            <embed type="application/x-mplayer2" src="{{ url_for('static',filename='video/'+title+'.wmv') }}" width="100%" height="100%" autostart="true"#}
+{#                showcontrols="true" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"></embed>#}
+{#        </object>#}
+
+
+
+
+{#    <embed src="http://www.ckplayer.com/ckplayer/x/ckplayer.swf" flashvars="video={{ url_for('static',filename='video/'+title+'.mp4') }}"  quality="high" width="480" height="400" align="middle" allowScriptAccess="always" allowFullscreen="true" type="application/x-shockwave-flash"/>#}
+
+
+
+  <div id="video" class="container" style="width:100%;height:820px;position: absolute;top:-20px"></div>
+{% endblock %}
